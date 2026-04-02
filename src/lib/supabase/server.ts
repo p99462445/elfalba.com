@@ -7,6 +7,12 @@ export async function createClient() {
 
     if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
         console.warn('Running in Supabase Mock Mode (Shell Site)');
+        
+        try {
+            // Next.js에게 동적 렌더링임을 명시하기 위해 더미 호출
+            await cookies();
+        } catch (e) {}
+
         const mockHandler: ProxyHandler<any> = {
             get: (target, prop) => {
                 if (prop === 'auth') return {

@@ -1,4 +1,5 @@
 import React from 'react';
+export const dynamic = 'force-dynamic';
 import { redirect } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';

@@ -4,13 +4,34 @@ import { Pool } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
 
 const singletonPrismaClient = () => {
-    const connectionString = process.env.DATABASE_URL || ''
+    const connectionString = process.env.DATABASE_URL || process.env.DIRECT_URL || ''
+    
+    if (!connectionString) {
+        console.warn('DATABASE_URL is missing. Running in Prisma Mock Mode (Shell Site)');
+        
+        const deepMockHandler: ProxyHandler<any> = {
+            get: (target, prop) => {
+                if (prop === 'then') return undefined; // Promise interop
+                if (['findUnique', 'findFirst'].includes(prop as string)) return async () => null;
+                if (['findMany'].includes(prop as string)) return async () => [];
+                if (['create', 'update', 'delete', 'upsert'].includes(prop as string)) return async () => ({});
+                if (['count'].includes(prop as string)) return async () => 0;
+                if (prop === '$transaction') return async (cb: any) => cb(new Proxy({}, deepMockHandler));
+                if (prop === '$connect' || prop === '$disconnect') return async () => {};
+                
+                return new Proxy({}, deepMockHandler);
+            }
+        };
+        
+        return new Proxy({}, deepMockHandler) as any;
+    }
+
     const cleanConnectionString = connectionString.trim().replace(/[\r\n]/g, '')
 
     const pool = new Pool({
         connectionString: cleanConnectionString,
         ssl: { rejectUnauthorized: false },
-        max: 3, // 서버리스 환경에서는 낮은 숫자가 더 안정적입니다.
+        max: 3, 
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 10000,
     })

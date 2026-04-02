@@ -1,10 +1,10 @@
+export const dynamic = 'force-dynamic';
 import React from 'react'
 import prisma from '@/lib/prisma'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { format } from 'date-fns'
 
-export const dynamic = 'force-dynamic'
 
 export default async function LoginLogsPage(props: { searchParams: Promise<{ q?: string, page?: string }> }) {
     const supabase = await createClient()
