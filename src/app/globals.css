@@ -43,20 +43,20 @@ html.dark body {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #ff6b9d, #ff9a8b);
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.bg-pink-soft {
-  background: #fff9fa;
+.bg-amber-soft {
+  background: #fffbeb;
 }
 
-.btn-hover-pink:hover {
-  background: #ff6b9d !important;
+.btn-hover-amber:hover {
+  background: #f59e0b !important;
   color: #fff !important;
-  border-color: #ff6b9d !important;
+  border-color: #f59e0b !important;
 }
 
 /* Optimized transition: applied only to interactive elements to improve performance */
