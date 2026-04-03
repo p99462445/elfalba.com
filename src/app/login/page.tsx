@@ -207,9 +207,16 @@ export default function LoginPage() {
                         <div className="text-amber-500 font-black text-2xl italic tracking-tighter">엘프알바</div>
                     </div>
 
-                    <h2 className="text-[20px] font-black leading-tight mb-6 tracking-tighter text-gray-900 dark:text-gray-100 break-keep">
-                        반가워요!<br />로그인 해주세요
+                    <h2 className="text-[20px] font-black leading-tight mb-4 tracking-tighter text-gray-900 dark:text-gray-100 break-keep">
+                        로그인 하시면<br />모든 정보를 볼 수 있어요!
                     </h2>
+
+                    <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-2xl p-4 mb-6 text-center">
+                        <p className="text-[13px] font-black text-amber-600 dark:text-amber-400">
+                            심사용 테스트 아이디: <span className="underline select-all text-gray-900 dark:text-gray-100">1@1.com</span> / 비번: <span className="underline select-all text-gray-900 dark:text-gray-100">123123</span>
+                        </p>
+                        <p className="text-[11px] font-bold text-amber-500 mt-1 opacity-80">로그인하면 모든정보를 볼수있어요 !</p>
+                    </div>
 
                     <form className="space-y-3" onSubmit={handleLogin}>
                         <div className="space-y-1">

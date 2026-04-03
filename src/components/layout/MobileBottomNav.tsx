@@ -9,8 +9,7 @@ import { useAuth } from '@/context/AuthContext'
 
 const MAIN_NAV = [
     { href: '/', label: '홈', icon: Home },
-    { href: '/방송모델', label: '채용정보', icon: MapPin },
-    { href: '/모델구인구직', label: '이력서', icon: FileText },
+    { href: '/광고안내', label: '광고등록', icon: CreditCard },
     { href: '/방송모델-고객센터', label: '고객센터', icon: HeadphonesIcon },
 ]
 
@@ -44,7 +43,7 @@ export default function MobileBottomNav() {
         <>
             {/* Bottom Nav Bar - Slimmer h-14 */}
             <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white dark:bg-dark-card border-t border-gray-100 dark:border-dark-border shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-                <div className="grid grid-cols-5 h-14">
+                <div className="grid grid-cols-4 h-14">
                     {MAIN_NAV.map(({ href, label, icon: Icon }) => {
                         const isHomePath = pathname === '/' || decodedPathname === '/' || !pathname || pathname === '';
                         let isActive = false;
