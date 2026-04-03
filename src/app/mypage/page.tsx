@@ -73,7 +73,7 @@ export default function MyPage() {
                     <div className="flex items-center gap-5">
                         <div className="w-16 h-16 bg-amber-50 dark:bg-dark-bg rounded-2xl flex items-center justify-center relative border-2 border-white dark:border-dark-border shadow-sm flex-shrink-0">
                             <div className="text-xl font-black text-amber-500">
-                                {(userRole === 'EMPLOYER' ? (profile?.businessName?.[0] || '업') : (profile?.nickname?.[0] || user.user_metadata?.nickname?.[0] || '회'))}
+                                {(userRole === 'EMPLOYER' ? (profile?.businessName?.[0] || '회') : (profile?.nickname?.[0] || user.user_metadata?.nickname?.[0] || '회'))}
                             </div>
                             <button
                                 onClick={() => router.push('/profile')}
@@ -100,7 +100,7 @@ export default function MyPage() {
                                             'bg-gray-100 dark:bg-dark-bg text-gray-500 dark:text-gray-400'
                                         }`}>
                                         {userRole === 'ADMIN' ? '총관리자' :
-                                            userRole === 'EMPLOYER' ? '업소회원' : '일반회원'}
+                                            userRole === 'EMPLOYER' ? '회사회원' : '일반회원'}
                                     </span>
                                     {userRole === 'EMPLOYER' && (
                                         <span className="text-[10px] font-bold text-gray-400">(프로필/채팅 노출 이름)</span>
@@ -151,7 +151,7 @@ export default function MyPage() {
                                 {/* Employer Menu Order: 1.공고관리, 2.업소정보관리, 3.채팅, 4.내정보수정, 5.고객센터 */}
                                 <MenuLink icon={<FileText size={20} />} label="공고관리" sub="공고 등록 및 점프 포인트 관리" href="/employer" color="text-amber-500" />
                                 <MenuDivider />
-                                <MenuLink icon={<Building2 size={20} />} label="업소정보관리" sub="상호명 및 연락처 정보 수정" href="/employer/business" color="text-blue-500" />
+                                <MenuLink icon={<Building2 size={20} />} label="회사정보관리" sub="상호명 및 연락처 정보 수정" href="/employer/business" color="text-blue-500" />
                                 <MenuDivider />
                                 <MenuLink icon={<MessageCircle size={20} />} label="채팅메세지" sub="업체와의 대화 내역" href="/messages" color="text-blue-400" />
                                 <MenuDivider />

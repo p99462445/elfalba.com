@@ -186,7 +186,7 @@ export default function ProfilePage() {
                 <div className="bg-white dark:bg-dark-card rounded-3xl p-6 border border-gray-100 dark:border-dark-border shadow-soft flex items-center gap-5">
                     <div className="w-16 h-16 bg-amber-50 dark:bg-dark-bg rounded-2xl flex items-center justify-center relative border-2 border-white dark:border-dark-border shadow-sm flex-shrink-0">
                         <div className="text-xl font-black text-amber-500">
-                            {(userRole === 'EMPLOYER' ? (form.businessName?.[0] || '업') : (form.nickname?.[0] || '회'))}
+                            {(userRole === 'EMPLOYER' ? (form.businessName?.[0] || '회') : (form.nickname?.[0] || '회'))}
                         </div>
                     </div>
                     <div className="flex-1 min-w-0">
@@ -198,7 +198,7 @@ export default function ProfilePage() {
                                 userRole === 'ADMIN' ? 'bg-purple-500 text-white' :
                                     'bg-gray-100 dark:bg-dark-bg text-gray-500 dark:text-gray-400'
                                 }`}>
-                                {userRole === 'EMPLOYER' ? '업소회원' : userRole === 'ADMIN' ? '관리자' : '개인회원'}
+                                {userRole === 'EMPLOYER' ? '회사회원' : userRole === 'ADMIN' ? '관리자' : '개인회원'}
                             </span>
                         </div>
                         <p className="text-[13px] font-bold text-gray-400 dark:text-gray-500 truncate tracking-tight">
@@ -295,7 +295,7 @@ export default function ProfilePage() {
                                     <Building2 size={20} className="text-blue-500" />
                                 </div>
                                 <div className="text-left">
-                                    <p className="text-sm font-black text-gray-900 dark:text-gray-100">업소(기업) 회원으로 전환</p>
+                                    <p className="text-sm font-black text-gray-900 dark:text-gray-100">회사(기업) 회원으로 전환</p>
                                     <p className="text-xs font-bold text-gray-400 dark:text-gray-500">공고 등록 및 구인 활동이 가능해집니다</p>
                                 </div>
                             </div>
@@ -308,11 +308,11 @@ export default function ProfilePage() {
                                     ⚠️ 전환 후 다시 개인 회원으로 변경하려면 관리자에게 문의해야 합니다.
                                 </p>
                                 {[
-                                    { name: 'business_name', label: '상호명 (필수)', placeholder: '업소 이름을 입력하세요' },
+                                    { name: 'business_name', label: '상호명 (필수)', placeholder: '회사 이름을 입력하세요' },
                                     { name: 'business_number', label: '사업자 등록번호', placeholder: '000-00-00000' },
                                     { name: 'owner_name', label: '대표자명', placeholder: '대표자 실명' },
-                                    { name: 'phone', label: '업소 연락처', placeholder: '010-0000-0000' },
-                                    { name: 'address', label: '업소 주소', placeholder: '상세 주소 입력' },
+                                    { name: 'phone', label: '회사 연락처', placeholder: '010-0000-0000' },
+                                    { name: 'address', label: '회사 주소', placeholder: '상세 주소 입력' },
                                 ].map(field => (
                                     <div key={field.name} className="space-y-1.5">
                                         <label className="text-xs font-bold text-gray-600 dark:text-gray-400 pl-2">{field.label}</label>
@@ -331,7 +331,7 @@ export default function ProfilePage() {
                                     className="w-full bg-blue-500 hover:bg-blue-600 text-white font-black py-4 rounded-2xl transition-all shadow-md disabled:opacity-50 flex justify-center items-center gap-2 mt-2 active:scale-95"
                                 >
                                     <Building2 size={20} />
-                                    {isUpgrading ? '처리 중...' : '업소 회원으로 전환하기'}
+                                    {isUpgrading ? '처리 중...' : '회사 회원으로 전환하기'}
                                 </button>
                             </form>
                         )}
@@ -345,7 +345,7 @@ export default function ProfilePage() {
                         disabled={isSaving}
                         className="text-xs font-bold text-gray-300 hover:text-red-400 underline decoration-gray-200 transition-colors"
                     >
-                        바다알바 회원 탈퇴하기
+                        엘프알바 회원 탈퇴하기
                     </button>
                     <p className="text-[10px] text-gray-300 mt-2">탈퇴 시 계정 정보는 안전하게 분리 보관됩니다.</p>
                 </div>

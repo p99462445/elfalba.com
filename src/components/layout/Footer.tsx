@@ -30,9 +30,13 @@ export default function Footer({ config }: { config?: any }) {
                     <span className="text-gray-200">|</span>
                     <Link href="/terms" prefetch={true} className="px-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">이용약관</Link>
                     <span className="text-gray-200">|</span>
+                    <Link href="/refund" prefetch={true} className="px-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">환불정책</Link>
+                    <span className="text-gray-200">|</span>
                     <Link href="/방송모델-고객센터" prefetch={true} className="px-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">고객센터</Link>
                     <span className="text-gray-200">|</span>
                     <Link href="/unpaid-employers" prefetch={true} className="px-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">체불사업자명단</Link>
+                    <span className="text-gray-200">|</span>
+                    <a href="https://www.minimumwage.go.kr/main.do" target="_blank" rel="noopener noreferrer" className="px-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">최저임금위원회</a>
                 </div>
                 <div className="flex flex-col items-center text-center">
                     <div className="text-[10px] text-gray-400 leading-relaxed uppercase text-center space-y-1">

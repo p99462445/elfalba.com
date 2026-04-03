@@ -98,11 +98,14 @@ export default function Header() {
                 <div className="max-w-6xl mx-auto h-full px-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <button onClick={toggleMenu} className="md:hidden p-2 text-gray-600"><Menu size={24} /></button>
-                        <Link href="/" className="h-10 w-24 bg-gray-100 rounded-lg"></Link>
+                        <Link href="/" className="flex flex-col items-start leading-none group">
+                            <span className="text-[10px] font-bold text-gray-400 group-hover:text-amber-500 transition-colors">미디어, 방송, 영상제작 1등</span>
+                            <span className="text-[17px] font-black text-amber-500 tracking-tighter">엘프알바 <span className="text-gray-900 dark:text-gray-100 text-[14px]">구인구직 플랫폼</span></span>
+                        </Link>
                     </div>
 
                     <nav className="hidden md:flex items-center gap-8 text-gray-700 font-black text-base">
-                        <Link href="/방송모델" className="hover:text-amber-500 transition">채용정보</Link>
+
                         <Link href="/광고안내" className="hover:text-amber-500 transition">광고안내</Link>
                         <Link href="/방송모델-고객센터" className="hover:text-amber-500 transition">고객센터</Link>
                     </nav>
@@ -141,7 +144,7 @@ export default function Header() {
                             <button onClick={toggleMenu}><X size={24} /></button>
                         </div>
                         <div className="flex-1 py-6">
-                            <MobileNavLink href="/채용정보" icon={<MapPin size={20} />} label="채용정보" />
+
                             <MobileNavLink href="/광고안내" icon={<CreditCard size={20} />} label="광고등록" />
                             <MobileNavLink href="/고객센터" icon={<HelpCircle size={20} />} label="고객센터" />
                         </div>
@@ -168,7 +171,7 @@ function UserMenuContent({ onLogout, onItemClick, userRole, userEmail }: { onLog
             {isAdmin && <MenuActionLink icon={<Settings size={18} />} label="관리자" href="/admin" onClick={onItemClick} />}
             {userRole === 'EMPLOYER' && (
                 <>
-                    <MenuActionLink icon={<Building2 size={18} />} label="업소관리" href="/employer/business" onClick={onItemClick} />
+                    <MenuActionLink icon={<Building2 size={18} />} label="회사관리" href="/employer/business" onClick={onItemClick} />
                     <MenuActionLink icon={<FileText size={18} />} label="공고관리" href="/employer" onClick={onItemClick} />
                 </>
             )}

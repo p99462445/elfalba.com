@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -162,7 +162,7 @@ export default function BusinessRegistrationPage() {
                 throw new Error(err.error || 'Failed to register employer')
             }
 
-            alert("사업자 정보가 성공적으로 등록 되었습니다! 관리 화면으로 이동합니다.")
+            alert("회사 정보가 성공적으로 등록 되었습니다! 관리 화면으로 이동합니다.")
 
             const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
             const nextJobId = urlParams?.get('nextJobId')
@@ -186,7 +186,7 @@ export default function BusinessRegistrationPage() {
                 <Link href="/mypage" className="text-gray-400 dark:text-gray-600 hover:text-amber-500 transition mr-4">
                     <ArrowLeft size={24} />
                 </Link>
-                <h1 className="text-xl font-black text-gray-900 dark:text-gray-100 flex-1 text-center pr-10 tracking-tighter">사업자정보 등록</h1>
+                <h1 className="text-xl font-black text-gray-900 dark:text-gray-100 flex-1 text-center pr-10 tracking-tighter">회사정보 등록</h1>
             </header>
 
             {/* Top Warning Banner */}
@@ -204,7 +204,7 @@ export default function BusinessRegistrationPage() {
                 <section>
                     <div className="flex items-center gap-2 mb-4">
                         <div className="w-1 h-4 bg-[#fb969a] rounded-full"></div>
-                        <h2 className="text-base font-black text-gray-800 dark:text-gray-100">사업자등록증 첨부</h2>
+                        <h2 className="text-base font-black text-gray-800 dark:text-gray-100">사업자등록증/증명서 첨부</h2>
                     </div>
                     <label className="flex flex-col items-center justify-center p-10 border-2 border-dashed border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-dark-bg rounded-[30px] transition hover:bg-amber-50/30 dark:hover:bg-amber-950/10 hover:border-amber-200 dark:hover:border-amber-900/50 group cursor-pointer overflow-hidden relative min-h-[200px]">
                         {certFile || certUrl ? (
@@ -214,7 +214,7 @@ export default function BusinessRegistrationPage() {
                                 <div className="w-16 h-16 bg-white dark:bg-dark-card rounded-2xl shadow-sm dark:shadow-none flex items-center justify-center text-gray-300 dark:text-gray-700 group-hover:text-amber-400 mb-4 transition">
                                     <Plus size={32} />
                                 </div>
-                                <span className="text-sm font-bold text-gray-400 dark:text-gray-600 group-hover:text-amber-500">사업자등록증 이미지 선택</span>
+                                <span className="text-sm font-bold text-gray-400 dark:text-gray-600 group-hover:text-amber-500">회사/사업자 확인 서류 선택</span>
                             </>
                         )}
                         <input
@@ -235,7 +235,7 @@ export default function BusinessRegistrationPage() {
                 <section className="space-y-6">
                     <div className="flex items-center gap-2 mb-2">
                         <div className="w-1 h-4 bg-[#fb969a] rounded-full"></div>
-                        <h2 className="text-base font-black text-gray-800 dark:text-gray-100">사업자 상세정보</h2>
+                        <h2 className="text-base font-black text-gray-800 dark:text-gray-100">회사 상세정보</h2>
                     </div>
 
                     <div className="space-y-5">
@@ -277,10 +277,10 @@ export default function BusinessRegistrationPage() {
                         </div>
 
                         <div>
-                            <label className="block text-[11px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-2 pl-1">사업자명 (상호명)</label>
+                            <label className="block text-[11px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-2 pl-1">회사명 (상호명)</label>
                             <input
                                 type="text"
-                                placeholder="사업자 상호를 입력해주세요."
+                                placeholder="회사 상호명을 입력해주세요."
                                 value={formData.businessName}
                                 onChange={e => setFormData({ ...formData, businessName: e.target.value })}
                                 className="w-full bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl p-4 text-sm font-bold focus:border-amber-300 dark:focus:border-amber-900/50 focus:bg-white dark:focus:bg-dark-card outline-none transition text-gray-900 dark:text-gray-100"
@@ -291,7 +291,7 @@ export default function BusinessRegistrationPage() {
                             <label className="block text-[11px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-2 pl-1">대표자명</label>
                             <input
                                 type="text"
-                                placeholder="사업자 대표를 입력해주세요."
+                                placeholder="회사 대표님 성함을 입력해주세요."
                                 value={formData.representativeName}
                                 onChange={e => setFormData({ ...formData, representativeName: e.target.value })}
                                 className="w-full bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl p-4 text-sm font-bold focus:border-amber-300 dark:focus:border-amber-900/50 focus:bg-white dark:focus:bg-dark-card outline-none transition text-gray-900 dark:text-gray-100"
@@ -300,11 +300,11 @@ export default function BusinessRegistrationPage() {
 
                         {/* 주소 검색 */}
                         <div>
-                            <label className="block text-[11px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-2 pl-1">사업장 주소</label>
+                            <label className="block text-[11px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-2 pl-1">회사 주소</label>
                             <div className="relative cursor-pointer mb-2" onClick={openAddressSearch}>
                                 <input
                                     type="text"
-                                    placeholder="사업자 주소를 검색해주세요."
+                                    placeholder="회사 주소를 검색해주세요."
                                     value={formData.address}
                                     readOnly
                                     className="w-full bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl p-4 text-sm font-bold focus:border-amber-300 dark:focus:border-amber-900/50 focus:bg-white dark:focus:bg-dark-card outline-none cursor-pointer transition text-gray-900 dark:text-gray-100"
@@ -333,7 +333,7 @@ export default function BusinessRegistrationPage() {
                         disabled={verificationStatus !== 'SUCCESS' || !formData.businessName || isLoading}
                         className={`w-full h-16 font-black rounded-[25px] transition-all text-lg shadow-xl ${(verificationStatus === 'SUCCESS' && formData.businessName && !isLoading) ? 'bg-amber-500 text-white shadow-amber-200 dark:shadow-none hover:scale-[1.02] active:scale-95' : 'bg-gray-100 dark:bg-dark-bg text-gray-300 dark:text-gray-700 cursor-not-allowed'}`}
                     >
-                        {isLoading ? '저장 중...' : '사업자 정보 등록완료'}
+                        {isLoading ? '저장 중...' : '회사 정보 등록완료'}
                     </button>
                 </div>
             </div>

@@ -67,7 +67,7 @@ export default function JobDetailClient({ job }: JobDetailClientProps) {
                     <div className="flex items-center gap-1.5">
                         <div className="w-[26px] h-[26px] rounded-full bg-[#ff8c00] flex-shrink-0"></div>
                         <div className="text-[15px] font-extrabold text-gray-900 dark:text-gray-100 flex items-center gap-1 tracking-tight">
-                            {job.business_name || job.employer?.business_name || '업소명'}
+                            {job.business_name || job.employer?.business_name || '회사명'}
                             <span className="text-gray-400 font-medium text-[12px] tracking-normal" suppressHydrationWarning>
                                 · {isMounted ? adDays : '...'}일째 광고중
                             </span>
@@ -179,7 +179,7 @@ export default function JobDetailClient({ job }: JobDetailClientProps) {
                 {/* 주의사항 (Disclaimer) */}
                 <div className="bg-[#f8f9fa] dark:bg-dark-bg px-5 py-5 mt-4 border-t-[6px] border-[#f8f9fa] dark:border-dark-bg">
                     <p className="text-[12px] leading-[1.6] text-gray-400 break-keep">
-                        본 채용정보는 <span className="font-bold">{job.employer?.business_name || job.business_name || '해당 업체'}</span>에서 제공했어요. 본 회사는 게재된 정보의 정확성 및 이미지 저작권, 내용상의 오류나 지연, 사용자가 본 정보를 신뢰하여 취한 조치에 대해 책임지지 않기 때문에 상세 내용은 반드시 해당 기업에 직접 확인해주세요. 본 정보는 본 회사의 동의 없이 무단으로 복제하거나 재배포할 수 없어요.
+                        본 채용정보는 <span className="font-bold">{job.employer?.business_name || job.business_name || '해당 회사'}</span>에서 제공했어요. 본 회사는 게재된 정보의 정확성 및 이미지 저작권, 내용상의 오류나 지연, 사용자가 본 정보를 신뢰하여 취한 조치에 대해 책임지지 않기 때문에 상세 내용은 반드시 해당 기업에 직접 확인해주세요. 본 정보는 본 회사의 동의 없이 무단으로 복제하거나 재배포할 수 없어요.
                     </p>
                 </div>
 
@@ -243,7 +243,7 @@ export default function JobDetailClient({ job }: JobDetailClientProps) {
             {isChatOpen && currentUserId && (
                 <FloatingJobChat
                     employerUserId={job.employer?.user_id}
-                    employerBusinessName={job.employer?.business_name || '업소'}
+                    employerBusinessName={job.employer?.business_name || '회사'}
                     currentUserId={currentUserId}
                     onClose={() => setIsChatOpen(false)}
                 />

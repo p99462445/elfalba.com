@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Rocket, Edit3, Plus, ArrowLeft, Crown, Sparkles, LogOut, User, MessageSquare, X, CreditCard, Settings, RefreshCw, Briefcase, Building2, ChevronRight, ReceiptText, Clock, Copy, Check, Zap } from 'lucide-react'
@@ -136,7 +136,7 @@ export default function EmployerDashboard() {
                                 {employer?.business_name || '상호명 미등록'}
                             </h2>
                             <span className="px-2 py-0.5 bg-blue-500 text-white rounded-md text-[9px] font-black tracking-tight whitespace-nowrap">
-                                업소회원
+                                회사회원
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
