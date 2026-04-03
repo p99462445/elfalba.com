@@ -255,6 +255,7 @@ model JobRegion {
 enum SalaryType {
   TC
   HOURLY
+  MONTHLY
   NEGOTIABLE
 }
 

@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { createClient } from '@/lib/supabase/server'
 
 export async function POST(req: Request) {
+    let body: any = {}
     try {
         const supabase = await createClient()
         const { data: { user } } = await supabase.auth.getUser()
@@ -24,7 +25,13 @@ export async function POST(req: Request) {
             })
         }
 
-        const body = await req.json()
+        try {
+            const json = await req.json()
+            body = json
+        } catch (e) {
+            return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+        }
+
         const {
             title, description,
             salaryType, salaryAmount, salaryInfo,
@@ -32,21 +39,16 @@ export async function POST(req: Request) {
             contactInfo, regionSlugs, categorySlug,
             managerName, businessName, kakaoId, telegramId, lineId,
             workingType, employmentType,
-            imageUrls, logoUrl // Added logoUrl
+            imageUrls, logoUrl,
+            paymentId, productId // Added payment information
         } = body
 
-        if (!regionSlugs || regionSlugs.length === 0) {
-            return NextResponse.json({ error: 'At least one region is required' }, { status: 400 })
-        }
-
         // Resolve Region and Category IDs
-        const [regions, category] = await Promise.all([
-            prisma.region.findMany({ where: { slug: { in: regionSlugs } } }),
-            prisma.jobCategory.findFirst({ where: { slug: categorySlug } })
-        ])
+        const regions = regionSlugs && regionSlugs.length > 0 ? await prisma.region.findMany({ where: { slug: { in: regionSlugs } } }) : [];
+        const category = await prisma.jobCategory.findFirst({ where: { slug: categorySlug } });
 
-        if (regions.length === 0 || !category) {
-            return NextResponse.json({ error: 'Invalid region or category' }, { status: 400 })
+        if (!category) {
+            return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
         }
 
         // Create the Job with multiple regions and images
@@ -89,11 +91,43 @@ export async function POST(req: Request) {
             include: { regions: true, images: true }
         })
 
-        return NextResponse.json({ message: '공고가 성공적으로 등록되었습니다.', data: { id: job.id } })
+        // If pre-paid via PortOne, link/create payment record
+        if (paymentId && productId) {
+            await prisma.payment.upsert({
+                where: { id: paymentId },
+                update: { 
+                    job_id: job.id, 
+                    status: 'APPROVED'
+                },
+                create: {
+                    id: paymentId,
+                    user_id: user.id,
+                    product_id: productId,
+                    job_id: job.id,
+                    amount: 0,
+                    status: 'APPROVED',
+                    payment_method: 'CARD',
+                    pg_transaction_id: paymentId
+                }
+            });
+        }
+
+        return NextResponse.json({ message: '공고가 성공적으로 등록 되었습니다.', data: { id: job.id } })
 
     } catch (error: any) {
-        console.error("JOB POST ERROR:", error)
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        try {
+            const fs = require('fs');
+            const logPath = 'C:\\Users\\박근홍\\.gemini\\antigravity\\scratch\\elf-alba\\prisma_error.log';
+            fs.writeFileSync(logPath, JSON.stringify({
+                message: error.message,
+                stack: error.stack,
+                body: (typeof body !== 'undefined' ? body : 'not_parsed'),
+                prismaError: error
+            }, null, 2));
+        } catch (e) {}
+        console.error("JOB POST ERROR FULL:", JSON.stringify(error, null, 2));
+        console.error("JOB POST ERROR MESSAGE:", error.message);
+        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 })
     }
 }
 

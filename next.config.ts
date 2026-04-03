@@ -1,18 +1,7 @@
 import type { NextConfig } from "next";
 
-// Ensure build succeeds even without env vars for "shell" mode
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-  process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://placeholder.supabase.co';
-}
-if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'placeholder';
-}
 
 const nextConfig: NextConfig = {
-  env: {
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder',
-  },
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,

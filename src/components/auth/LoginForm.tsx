@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -47,25 +47,7 @@ export default function LoginForm({ onSuccess, onClose, onSwitchToSignup }: Logi
         }
     }, [])
 
-    const handleGoogleLogin = async () => {
-        setIsLoading(true)
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    queryParams: {
-                        access_type: 'offline',
-                        prompt: 'select_account',
-                    },
-                    redirectTo: `${window.location.origin}/auth/callback`,
-                },
-            })
-            if (error) throw error
-        } catch (err: any) {
-            showError(`구글 로그인 실패: ${translateError(err)}`)
-            setIsLoading(false)
-        }
-    }
+
 
     const handleMigrate = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -292,15 +274,7 @@ export default function LoginForm({ onSuccess, onClose, onSwitchToSignup }: Logi
                     ) : '로그인'}
                 </button>
 
-                <button
-                    type="button"
-                    onClick={handleGoogleLogin}
-                    disabled={isLoading}
-                    className="w-full h-14 bg-white dark:bg-dark-bg border border-gray-100 dark:border-dark-border text-gray-800 dark:text-gray-100 rounded-2xl font-black text-[15px] flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-dark-card transition-all active:scale-[0.98] shadow-sm mt-3"
-                >
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
-                    구글 1초 로그인/가입
-                </button>
+
             </form>
 
             <div className="mt-6 pt-6 border-t border-gray-100 dark:border-dark-border flex flex-col items-center gap-2">

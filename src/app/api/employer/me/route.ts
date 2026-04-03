@@ -40,7 +40,17 @@ export async function GET() {
             where: { id: 'default' }
         })
 
-        return NextResponse.json({ employer, jobs, siteConfig })
+        const unlinkedPayments = await prisma.payment.findMany({
+            where: {
+                user_id: user.id,
+                status: 'APPROVED',
+                job_id: null
+            },
+            include: { product: true },
+            orderBy: { created_at: 'desc' }
+        })
+
+        return NextResponse.json({ employer, jobs, siteConfig, unlinkedPayments })
 
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 })

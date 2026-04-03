@@ -1,4 +1,4 @@
-﻿import React, { Suspense } from 'react'
+import React, { Suspense } from 'react'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { createClient } from '@/lib/supabase/server'
@@ -17,7 +17,7 @@ async function VvipJobsSection() {
 
   return (
     <section className="px-4 pt-1 pb-2 bg-gray-50/50">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-2xl">👑</span>
           <h2 className="text-xl font-bold text-gray-900">프리미엄 채용정보</h2>
@@ -37,7 +37,7 @@ async function VipJobsSection() {
 
   return (
     <section className="px-4 pt-2 pb-2">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-2xl text-amber-500">⭐</span>
           <h2 className="text-xl font-bold">추천 채용정보</h2>
@@ -57,7 +57,7 @@ async function GeneralJobsSection({ siteName }: { siteName: string }) {
 
   return (
     <section className="px-4 pt-2 pb-2">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-2xl text-gray-400">📑</span>
           <h2 className="text-xl font-bold text-gray-700">{siteName} 채용정보</h2>
@@ -85,7 +85,7 @@ async function OfficialPartnerSection() {
 
   return (
     <section className="px-4 pt-2 bg-gray-50/50">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-2 mb-2">
           <div className="text-amber-500 font-black text-2xl italic h-[44px] flex items-center">엘프알바</div>
           <h2 className="text-[19px] font-black tracking-tight text-gray-900 leading-none pb-0.5">
@@ -145,7 +145,7 @@ export default async function HomePage() {
       </Suspense>
 
       <section className="px-0 pt-15 pb-6">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <div className="flex justify-center py-0">
             <div className="text-center">
               <h4 className="text-gray-900 font-bold text-xl mb-3">고객센터</h4>

@@ -1,29 +1,31 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft, Sparkles, CreditCard, Zap, Rocket, Crown, Star, ChevronRight } from 'lucide-react'
+import * as PortOne from "@portone/browser-sdk/v2";
+import { ChevronLeft, Sparkles, CreditCard, Zap, Rocket, Crown, Star, ChevronRight, Loader2 } from 'lucide-react'
 
 export default function AdvertisePage() {
     const router = useRouter()
     const [products, setProducts] = useState<any[]>([])
     const [selectedDays, setSelectedDays] = useState(30)
     const [loading, setLoading] = useState(true)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const [siteConfig, setSiteConfig] = useState<any>(null)
+    const [user, setUser] = useState<any>(null)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [prodRes, cfgRes] = await Promise.all([
+                const [configRes, productsRes, userRes] = await Promise.all([
+                    fetch('/api/common/site-config'),
                     fetch('/api/employer/products'),
-                    fetch('/api/common/site-config')
+                    fetch('/api/employer/me')
                 ])
-                if (prodRes.ok) setProducts(await prodRes.json())
-                if (cfgRes.ok) setSiteConfig(await cfgRes.json())
-            } catch (err) {
-                console.error(err)
-            } finally {
-                setLoading(false)
-            }
+                if (configRes.ok) setSiteConfig(await configRes.json())
+                if (productsRes.ok) setProducts(await productsRes.json())
+                if (userRes.ok) setUser(await userRes.json())
+            } catch (err) { console.error(err) }
+            finally { setLoading(false) }
         }
         fetchData()
     }, [])
@@ -35,6 +37,54 @@ export default function AdvertisePage() {
     const bankName = siteConfig?.bank_name || '국민은행'
     const bankAccount = siteConfig?.bank_account || '219401-04-263185'
     const bankOwner = siteConfig?.bank_owner || '주세컨즈나인'
+    const currentUser = user || { id: 'guest', name: '사용자', phone: '010-0000-0000', email: 'customer@elfalba.com' }
+
+    const handlePayment = async (product: any) => {
+        setIsSubmitting(true)
+        try {
+            const portoneStoreId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
+            const portoneChannelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
+
+            if (!portoneStoreId || !portoneChannelKey) {
+                alert("결제 설정이 누락되었습니다. 관리자에게 문의하세요.");
+                return;
+            }
+
+            const paymentId = `pay_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+            
+            const response = await PortOne.requestPayment({
+                storeId: portoneStoreId,
+                channelKey: portoneChannelKey,
+                paymentId: paymentId,
+                orderName: product.name,
+                totalAmount: product.price,
+                currency: "KRW",
+                payMethod: "CARD",
+                customer: {
+                    customerId: currentUser.id,
+                    fullName: currentUser.name,
+                    phoneNumber: currentUser.phone,
+                    email: currentUser.email,
+                },
+                bypass: {
+                    galaxia: { ITEM_CODE: "G000000001" }
+                },
+                redirectUrl: `${window.location.origin}/employer/jobs/new?productId=${product.id}&paymentId=${paymentId}`,
+            });
+
+            if (response && response.code == null) {
+                // PC Success (Mobile uses redirectUrl)
+                router.push(`/employer/jobs/new?productId=${product.id}&paymentId=${response.paymentId}`);
+            } else if (response) {
+                alert(response.message || "결제가 취소되었거나 오류가 발생했습니다.");
+            }
+        } catch (err: any) {
+            console.error('Payment Error:', err);
+            alert("결제 준비 중 오류가 발생했습니다.");
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     return (
         <div className="min-h-screen bg-[#f8f9fa] dark:bg-dark-bg transition-colors duration-300">
@@ -151,6 +201,18 @@ export default function AdvertisePage() {
                                             <span className="text-[13px] font-black text-gray-700 dark:text-gray-300">{m.tabDesc}</span>
                                         </div>
                                     </div>
+
+                                    <button
+                                        onClick={() => handlePayment(product)}
+                                        disabled={isSubmitting}
+                                        className={`w-full mt-6 py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-[0.98] disabled:opacity-50 ${
+                                            product.product_type === 'VVIP_SLOT' 
+                                            ? 'bg-gray-900 text-white hover:bg-black' 
+                                            : 'bg-amber-500 text-white hover:bg-amber-600'
+                                        }`}
+                                    >
+                                        {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <>이 상품 결제하고 공고 쓰기 <ChevronRight size={16} /></>}
+                                    </button>
                                 </div>
                             )
                         })

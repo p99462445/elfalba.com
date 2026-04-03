@@ -185,13 +185,15 @@ export async function PUT(
             } as any
         })
 
-        // Simple region update (clear and re-add for simplicity in MVP)
-        if (regionSlugs && regionSlugs.length > 0) {
+        // Simple region update
+        if (regionSlugs !== undefined) {
             await prisma.jobRegion.deleteMany({ where: { job_id: jobId } })
-            const regions = await prisma.region.findMany({ where: { slug: { in: regionSlugs } } })
-            await prisma.jobRegion.createMany({
-                data: regions.map((r: any) => ({ job_id: jobId, region_id: r.id }))
-            })
+            if (regionSlugs.length > 0) {
+                const regions = await prisma.region.findMany({ where: { slug: { in: regionSlugs } } })
+                await prisma.jobRegion.createMany({
+                    data: regions.map((r: any) => ({ job_id: jobId, region_id: r.id }))
+                })
+            }
         }
 
         // Handle Image updates

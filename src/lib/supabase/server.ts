@@ -5,31 +5,8 @@ export async function createClient() {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
-        console.warn('Running in Supabase Mock Mode (Shell Site)');
-        
-        try {
-            // Next.js에게 동적 렌더링임을 명시하기 위해 더미 호출
-            await cookies();
-        } catch (e) {}
-
-        const mockHandler: ProxyHandler<any> = {
-            get: (target, prop) => {
-                if (prop === 'auth') return {
-                    getUser: async () => ({ data: { user: null }, error: null }),
-                    getSession: async () => ({ data: { session: null }, error: null }),
-                };
-                if (prop === 'from') return () => ({
-                    select: () => ({
-                        eq: () => ({ order: () => ({ limit: () => ({ single: async () => ({ data: null, error: null }), then: (cb: any) => cb({ data: [], error: null }) }) }) }),
-                        order: () => ({ then: (cb: any) => cb({ data: [], error: null }) }),
-                        then: (cb: any) => cb({ data: [], error: null }),
-                    }),
-                });
-                return (...args: any[]) => ({ then: (cb: any) => cb({ data: null, error: null }) });
-            }
-        };
-        return new Proxy({}, mockHandler) as any;
+    if (!supabaseUrl || !supabaseKey) {
+        throw new Error('Supabase environment variables are missing');
     }
 
     const cookieStore = await cookies()

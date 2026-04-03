@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -103,7 +103,7 @@ export default function Header() {
 
                     <nav className="hidden md:flex items-center gap-8 text-gray-700 font-black text-base">
                         <Link href="/방송모델" className="hover:text-amber-500 transition">채용정보</Link>
-                        <Link href="/고소득알바-광고안내" className="hover:text-amber-500 transition">광고안내</Link>
+                        <Link href="/광고안내" className="hover:text-amber-500 transition">광고안내</Link>
                         <Link href="/방송모델-고객센터" className="hover:text-amber-500 transition">고객센터</Link>
                     </nav>
 

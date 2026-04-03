@@ -75,13 +75,10 @@ export async function GET(request: Request) {
                 })
             }
 
-            // If user is missing role OR is not verified as adult, send to mandatory verification/role page
-            if (!existingUser?.role || !existingUser?.is_adult) {
-                return NextResponse.redirect(`${origin}/signup/role`)
-            }
+
 
             // If everything is perfect, redirect to home/employer
-            if (existingUser.role === 'EMPLOYER') {
+            if (existingUser?.role === 'EMPLOYER') {
                 return NextResponse.redirect(`${origin}/employer`)
             }
             return NextResponse.redirect(`${origin}${next}`)

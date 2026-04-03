@@ -40,7 +40,7 @@ export async function middleware(request: NextRequest) {
         const id = decodedPathname.split('/방송모델구인구직/')[1]
         return NextResponse.rewrite(new URL(`/resumes/${id}`, request.url))
     }
-    if (decodedPathname === '/고소득알바-광고안내') {
+    if (decodedPathname === '/광고안내') {
         return NextResponse.rewrite(new URL('/ad-info', request.url))
     }
 

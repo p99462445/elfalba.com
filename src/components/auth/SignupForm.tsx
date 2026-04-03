@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import { useModal } from '@/providers/ModalProvider'
 import { translateError } from '@/lib/utils/error-translator'
 
@@ -13,19 +13,15 @@ interface SignupFormProps {
 
 export default function SignupForm({ onSuccess, onClose, onSwitchToLogin }: SignupFormProps) {
     const router = useRouter()
-    const { showError, showSuccess, showAlert } = useModal()
+    const { showError, showSuccess } = useModal()
     const [role, setRole] = useState<'USER' | 'EMPLOYER'>('USER')
-    const [isVerified, setIsVerified] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [verifiedData, setVerifiedData] = useState<{ name: string; birthDate: string; gender: string; phone?: string } | null>(null)
-    const [verificationToken, setVerificationToken] = useState<string | null>(null)
 
     const [form, setForm] = useState({
         email: '',
         password: '',
         confirmPassword: '',
         nickname: '',
-        birthday: '',
         phone: '',
         agreeTerms: false,
         agreePrivacy: false,
@@ -33,121 +29,6 @@ export default function SignupForm({ onSuccess, onClose, onSwitchToLogin }: Sign
     })
 
     const [shouldShake, setShouldShake] = useState(false)
-
-    // Handle verification result if redirected back from PortOne
-    React.useEffect(() => {
-        const checkVerificationResult = async () => {
-            const searchParams = new URLSearchParams(window.location.search);
-            const identityVerificationId = searchParams.get('identityVerificationId');
-            const code = searchParams.get('code');
-            
-            if (identityVerificationId && !code) {
-                // If we have an ID but no error code, it means we redirected back after success
-                setIsLoading(true);
-                try {
-                    const verifyRes = await fetch("/api/auth/verify-identity", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ identityVerificationId }),
-                    });
-
-                    const result = await verifyRes.json();
-                    if (!verifyRes.ok) throw new Error(result.message || '인증 검증 실패');
-
-                    const { verifiedData: data, verificationToken: token } = result;
-                    setVerifiedData(data);
-                    setVerificationToken(token);
-                    setForm(prev => ({
-                        ...prev,
-                        nickname: data.name,
-                        birthday: data.birthDate,
-                        phone: data.phone || '010-0000-0000',
-                    }));
-                    setIsVerified(true);
-                    showSuccess('본인인증이 완료되었습니다.');
-                    
-                    // Clean up URL params
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                } catch (error: any) {
-                    console.error('Redirect verification error:', error);
-                    showError(`인증 검증 중 오류가 발생했습니다: ${translateError(error)}`);
-                } finally {
-                    setIsLoading(false);
-                }
-            } else if (code) {
-                const message = searchParams.get('message');
-                showError(`인증 실패: ${translateError(message || '알 수 없는 오류')}`);
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        };
-        checkVerificationResult();
-    }, []);
-
-    const handleVerification = async (verifySuccessCallback?: (token: string) => void) => {
-        try {
-            // @ts-ignore
-            if (typeof window.PortOne === 'undefined') {
-                showError('본인인증 SDK를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
-                return;
-            }
-
-            const identityVerificationId = `cert-${Date.now()}`;
-            const redirectUrl = `${window.location.origin}/signup`;
-            
-            // Detect mobile
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-            // @ts-ignore
-            const response = await window.PortOne.requestIdentityVerification({
-                storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "",
-                channelKey: "channel-key-ba75d8c6-64ac-4aff-907b-6204d1d0391e",
-                identityVerificationId,
-                redirectUrl,
-                windowType: isMobile ? 'REDIRECT' : 'POPUP',
-            });
-
-            // If it's a popup (desktop), result comes back here
-            if (!isMobile && response) {
-                if (response.code != null) {
-                    return showError(`인증 실패: ${translateError(response.message)}`);
-                }
-
-                setIsLoading(true);
-                const verifyRes = await fetch("/api/auth/verify-identity", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ identityVerificationId }),
-                });
-
-                const result = await verifyRes.json();
-                if (!verifyRes.ok) throw new Error(result.message || '인증 검증 실패');
-
-                const { verifiedData: data, verificationToken: token } = result;
-                setVerifiedData(data);
-                setVerificationToken(token);
-                setForm(prev => ({
-                    ...prev,
-                    nickname: data.name,
-                    birthday: data.birthDate,
-                    phone: data.phone || '010-0000-0000',
-                }));
-                setIsVerified(true);
-                setIsLoading(false);
-
-                if (verifySuccessCallback) {
-                    verifySuccessCallback(token);
-                } else {
-                    showSuccess('본인인증이 완료되었습니다.');
-                }
-            }
-            // If it's a redirect (mobile), the function execution stops here as the page navigates away
-
-        } catch (error: any) {
-            console.error('Verification error:', error);
-            showError(`본인인증 과정에서 오류가 발생했습니다.\n상세: ${translateError(error)}`);
-            setIsLoading(false);
-        }
-    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target
@@ -191,7 +72,6 @@ export default function SignupForm({ onSuccess, onClose, onSwitchToLogin }: Sign
                     username: form.nickname,
                     phone: form.phone || null,
                     role,
-                    verificationToken,
                     terms_agreed: form.agreeTerms,
                     privacy_agreed: form.agreePrivacy,
                     sms_consent: form.agreeSms
@@ -222,70 +102,6 @@ export default function SignupForm({ onSuccess, onClose, onSwitchToLogin }: Sign
         }
     }
 
-    // ── Adult Verification Screen ──
-    if (!isVerified) {
-        return (
-            <div className="relative pt-6 pb-12 px-8 text-center bg-white dark:bg-dark-card animate-in fade-in duration-300">
-                {onClose && (
-                    <button
-                        onClick={onClose}
-                        className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg rounded-full transition-colors z-20"
-                    >
-                        <X size={20} />
-                    </button>
-                )}
-
-                <div className="pt-8">
-                    <div className="mx-auto w-[64px] h-[64px] border-[3px] border-amber-500 rounded-full flex items-center justify-center mb-6">
-                        <span className="text-[24px] font-black text-gray-900 dark:text-white">19</span>
-                    </div>
-
-                    <h2 className="text-[22px] font-black tracking-tighter text-gray-900 dark:text-gray-100 mb-2">
-                        성인인증이 필요해요
-                    </h2>
-                    <p className="text-[13px] text-gray-400 font-bold mb-10 leading-relaxed">
-                        안전한 서비스 이용을 위해 <br />
-                        본인인증을 진행해 주세요.
-                    </p>
-
-                    <div className="space-y-4">
-                        <button
-                            onClick={() => handleVerification()}
-                            className="w-full h-15 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black text-[16px] flex items-center justify-center gap-3 hover:scale-[1.02] transition-all shadow-lg"
-                        >
-                            휴대폰 본인인증
-                        </button>
-
-                        <button
-                            onClick={() => {
-                                handleVerification(async (token) => {
-                                    const { createClient } = await import('@/lib/supabase/client')
-                                    const supabase = createClient()
-                                    document.cookie = `sb-verification-token=${token}; path=/; max-age=600; SameSite=Lax`;
-                                    await supabase.auth.signInWithOAuth({
-                                        provider: 'google',
-                                        options: { redirectTo: `${window.location.origin}/auth/callback` },
-                                    })
-                                });
-                            }}
-                            className="w-full h-15 bg-white dark:bg-dark-bg border-2 border-gray-100 dark:border-dark-border text-gray-800 dark:text-gray-100 rounded-2xl font-black text-[15px] flex items-center justify-center gap-3 hover:border-amber-500 transition-all active:scale-[0.98]"
-                        >
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
-                            구글 1초 가입하기
-                        </button>
-                    </div>
-
-                    <button
-                        onClick={onSwitchToLogin}
-                        className="mt-6 text-[13px] text-gray-400 font-bold hover:text-amber-500 underline"
-                    >
-                        이미 계정이 있으신가요?
-                    </button>
-                </div>
-            </div>
-        )
-    }
-
     // ── Signup Form Screen ──
     return (
         <div className="relative pt-6 pb-12 px-8 bg-white dark:bg-dark-card animate-in fade-in duration-300">
@@ -300,7 +116,7 @@ export default function SignupForm({ onSuccess, onClose, onSwitchToLogin }: Sign
 
             <div className="text-center mb-6 pt-4">
                 <div className="text-amber-500 font-black text-3xl italic mb-4">엘프알바</div>
-                <h1 className="text-[20px] font-black text-gray-900 tracking-tighter mb-1">회원가입</h1>
+                <h1 className="text-[20px] font-black text-gray-900 dark:text-white tracking-tighter mb-1">회원가입</h1>
                 <p className="text-[12px] text-amber-500 font-bold">거의 다 왔어요!</p>
             </div>
 
@@ -322,24 +138,52 @@ export default function SignupForm({ onSuccess, onClose, onSwitchToLogin }: Sign
             </div>
 
             <form className="space-y-4" onSubmit={handleSubmit}>
+                <style jsx global>{`
+                    @keyframes shake {
+                        0%, 100% { transform: translateX(0); }
+                        25% { transform: translateX(-5px); }
+                        75% { transform: translateX(5px); }
+                    }
+                    .animate-shake {
+                        animation: shake 0.2s ease-in-out infinite;
+                        animation-iteration-count: 2;
+                    }
+                `}</style>
                 <div>
                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">아이디</label>
                     <input name="email" type="text" value={form.email} onChange={handleChange}
                         placeholder="아이디 입력" required
-                        className="w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border focus:border-amber-300 outline-none text-[13px] font-bold" />
+                        className="w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border focus:border-amber-300 outline-none text-[13px] font-bold dark:text-white" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                    <div>
+                    <div className={shouldShake && form.password !== form.confirmPassword ? 'animate-shake' : ''}>
                         <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">비밀번호</label>
                         <input name="password" type="password" value={form.password} onChange={handleChange}
                             placeholder="6자 이상" required
-                            className="w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border focus:border-amber-300 outline-none text-[13px] font-bold" />
+                            className={`w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border outline-none text-[13px] font-bold dark:text-white ${shouldShake && form.password !== form.confirmPassword ? 'border-red-500' : 'border-gray-100 dark:border-dark-border focus:border-amber-300'}`} />
                     </div>
-                    <div>
+                    <div className={shouldShake && form.password !== form.confirmPassword ? 'animate-shake' : ''}>
                         <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">확인</label>
                         <input name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange}
-                            className="w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border focus:border-amber-300 outline-none text-[13px] font-bold" />
+                            className={`w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border outline-none text-[13px] font-bold dark:text-white ${shouldShake && form.password !== form.confirmPassword ? 'border-red-500' : 'border-gray-100 dark:border-dark-border focus:border-amber-300'}`} />
+                    </div>
+                </div>
+
+                <div className="space-y-3 pt-2">
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">닉네임</label>
+                            <input value={form.nickname} onChange={(e) => setForm(prev => ({ ...prev, nickname: e.target.value }))}
+                                placeholder="닉네임 입력" required
+                                className="w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border text-gray-900 dark:text-white text-[13px] font-bold outline-none focus:border-amber-300 transition" />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">휴대폰 (선택)</label>
+                            <input value={form.phone} onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
+                                placeholder="예: 01012345678"
+                                className="w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border text-gray-900 dark:text-white text-[13px] font-bold outline-none focus:border-amber-300 transition" />
+                        </div>
                     </div>
                 </div>
 
@@ -353,11 +197,22 @@ export default function SignupForm({ onSuccess, onClose, onSwitchToLogin }: Sign
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full h-13 bg-amber-500 text-white rounded-xl font-black text-[15px] hover:bg-amber-600 transition-all shadow-md"
+                    className="w-full h-13 bg-amber-500 text-white rounded-xl font-black text-[15px] hover:bg-amber-600 active:scale-[0.98] transition-all flex items-center justify-center shadow-md relative"
                 >
-                    {isLoading ? '발송 중...' : '회원가입 완료'}
+                    {isLoading ? (
+                         <div className="w-5 h-5 flex items-center justify-center">
+                              <div className="w-full h-full border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                         </div>
+                    ) : '회원가입 완료'}
                 </button>
             </form>
+
+            <button
+                onClick={onSwitchToLogin}
+                className="w-full mt-6 text-[13px] text-gray-400 font-bold hover:text-amber-500 underline text-center"
+            >
+                이미 계정이 있으신가요?
+            </button>
         </div>
     )
 }

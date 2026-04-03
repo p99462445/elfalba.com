@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft } from 'lucide-react'
 
 const SALARY_TYPE_LABEL: Record<string, string> = {
     TC: 'TC',
@@ -25,124 +24,13 @@ export { formatSalary, SALARY_TYPE_LABEL }
 export default function SignupPage() {
     const router = useRouter()
     const [role, setRole] = useState<'USER' | 'EMPLOYER'>('USER')
-    const [isVerified, setIsVerified] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
-    const [verifiedData, setVerifiedData] = useState<{ name: string; birthDate: string; gender: string; phone?: string } | null>(null)
-    const [verificationToken, setVerificationToken] = useState<string | null>(null)
-
-    // Handle verification result if redirected back from PortOne
-    React.useEffect(() => {
-        const checkVerificationResult = async () => {
-            const searchParams = new URLSearchParams(window.location.search);
-            const identityVerificationId = searchParams.get('identityVerificationId');
-            const code = searchParams.get('code');
-            const message = searchParams.get('message');
-
-            if (code && code !== 'undefined') {
-                alert(decodeURIComponent(message || '인증에 실패했습니다.'));
-                // Clear query params
-                window.history.replaceState({}, '', window.location.pathname);
-                return;
-            }
-
-            if (identityVerificationId) {
-                try {
-                    setIsLoading(true);
-                    const verifyRes = await fetch("/api/auth/verify-identity", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ identityVerificationId }),
-                    });
-
-                    const result = await verifyRes.json();
-                    if (!verifyRes.ok) throw new Error(result.message || '인증 검증 실패');
-
-                    const { verifiedData: data, verificationToken: token } = result;
-                    setVerifiedData(data);
-                    setVerificationToken(token);
-                    setForm(prev => ({
-                        ...prev,
-                        nickname: data.name,
-                        birthday: data.birthDate,
-                        phone: data.phone || '010-0000-0000',
-                    }));
-                    setIsVerified(true);
-                    // Clear query params
-                    window.history.replaceState({}, '', window.location.pathname);
-                } catch (error: any) {
-                    alert(error.message);
-                } finally {
-                    setIsLoading(false);
-                }
-            }
-        };
-
-        checkVerificationResult();
-    }, []);
-
-    const handleVerification = async (onSuccess?: (token: string) => void) => {
-        try {
-            // @ts-ignore
-            if (typeof window.PortOne === 'undefined') {
-                alert('본인인증 SDK를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
-                return;
-            }
-
-            const identityVerificationId = `cert-${Date.now()}`;
-            const redirectUrl = `${window.location.origin}/signup`;
-
-            // @ts-ignore
-            const response = await window.PortOne.requestIdentityVerification({
-                storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID || "",
-                channelKey: "channel-key-ba75d8c6-64ac-4aff-907b-6204d1d0391e",
-                identityVerificationId,
-                redirectUrl,
-            });
-
-            if (response.code != null) {
-                return alert(`인증 실패: ${response.message}`);
-            }
-
-            // 서버에 검증 요청
-            const verifyRes = await fetch("/api/auth/verify-identity", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ identityVerificationId }),
-            });
-
-            const result = await verifyRes.json();
-            if (!verifyRes.ok) throw new Error(result.message || '인증 검증 실패');
-
-            const { verifiedData: data, verificationToken: token } = result;
-            setVerifiedData(data);
-            setVerificationToken(token);
-            setForm(prev => ({
-                ...prev,
-                nickname: data.name,
-                birthday: data.birthDate,
-                phone: data.phone || '010-0000-0000',
-            }));
-            setIsVerified(true);
-
-            // 만약 콜백이 있다면 실행 (예: 구글 로그인으로 바로 넘어가기)
-            if (onSuccess) {
-                onSuccess(token);
-            } else {
-                alert('본인인증이 완료되었습니다.');
-            }
-
-        } catch (error: any) {
-            console.error('Verification error:', error);
-            alert(`본인인증 과정에서 오류가 발생했습니다.\n상세: ${error?.message || error}`);
-        }
-    }
 
     const [form, setForm] = useState({
         email: '',
         password: '',
         confirmPassword: '',
         nickname: '',
-        birthday: '',
         phone: '',
         agreeTerms: false,
         agreePrivacy: false,
@@ -194,8 +82,6 @@ export default function SignupPage() {
                     username: form.nickname,
                     phone: form.phone || null,
                     role,
-                    // 보안성 강화: CI 대신 서버 측에서 검증 가능한 토큰 전달
-                    verificationToken,
                     // 약관 동의 내역 추가
                     terms_agreed: form.agreeTerms,
                     privacy_agreed: form.agreePrivacy,
@@ -241,108 +127,6 @@ export default function SignupPage() {
         } finally {
             setIsLoading(false)
         }
-    }
-
-    // ── 성인인증 화면 ──────────────────────────────────────────
-    if (!isVerified) {
-        return (
-            <div className="min-h-screen bg-white dark:bg-dark-bg flex flex-col items-center justify-center p-4">
-                <div className="w-full max-w-[360px] animate-in fade-in slide-in-from-bottom-5 duration-700">
-
-                    {/* Persuasive Notice */}
-                    <div className="mb-8 p-5 bg-amber-500 rounded-[32px] text-white shadow-xl shadow-amber-200 dark:shadow-none animate-pulse">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center shrink-0">
-                                <span className="text-xl">✨</span>
-                            </div>
-                            <p className="text-[13px] font-black leading-tight">
-                                성인인증 1회 완료 시, 커뮤니티 활동과 <br />
-                                구인구직 서비스를 즉시 확인하실 수 있습니다.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="relative w-full bg-white dark:bg-dark-card rounded-[40px] overflow-hidden shadow-2xl border border-gray-100 dark:border-dark-border text-center p-8">
-                        <button
-                            onClick={() => router.back()}
-                            className="absolute top-6 left-6 w-10 h-10 flex items-center justify-center text-gray-300 hover:text-gray-500 transition-colors z-10"
-                        >
-                            <ChevronLeft size={24} />
-                        </button>
-
-                        <div className="pt-8">
-                            <div className="mx-auto w-[64px] h-[64px] border-[3px] border-amber-500 rounded-full flex items-center justify-center mb-6">
-                                <span className="text-[24px] font-black text-gray-900 dark:text-white">19</span>
-                            </div>
-
-                            <h2 className="text-[22px] font-black tracking-tighter text-gray-900 dark:text-gray-100 mb-2">
-                                성인인증이 필요해요
-                            </h2>
-                            <p className="text-[13px] text-gray-400 font-bold mb-10 leading-relaxed">
-                                안전한 서비스 이용을 위해 <br />
-                                딱 한 번만 본인인증을 진행해 주세요.
-                            </p>
-
-                            <div className="space-y-4">
-                                <button
-                                    onClick={() => handleVerification()}
-                                    className="w-full h-15 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black text-[16px] flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg"
-                                >
-                                    휴대폰 본인인증
-                                </button>
-
-                                <button
-                                    onClick={async () => {
-                                        // 1. Check if already verified in this session
-                                        if (isVerified && verificationToken) {
-                                            const { createClient } = await import('@/lib/supabase/client')
-                                            const supabase = createClient()
-                                            // Store token in cookie for the callback route to consume
-                                            document.cookie = `sb-verification-token=${verificationToken}; path=/; max-age=600; SameSite=Lax`;
-
-                                            await supabase.auth.signInWithOAuth({
-                                                provider: 'google',
-                                                options: {
-                                                    redirectTo: `${window.location.origin}/auth/callback`,
-                                                },
-                                            })
-                                            return;
-                                        }
-
-                                        // 2. If not verified, trigger verification first
-                                        alert('안전한 가입을 위해 먼저 본인인증을 진행해 주세요.');
-                                        handleVerification(async (token) => {
-                                            const { createClient } = await import('@/lib/supabase/client')
-                                            const supabase = createClient()
-                                            // Store fresh token from callback in cookie
-                                            document.cookie = `sb-verification-token=${token}; path=/; max-age=600; SameSite=Lax`;
-
-                                            await supabase.auth.signInWithOAuth({
-                                                provider: 'google',
-                                                options: {
-                                                    redirectTo: `${window.location.origin}/auth/callback`,
-                                                },
-                                            })
-                                        });
-                                    }}
-                                    className="w-full h-15 bg-white dark:bg-dark-bg border-2 border-gray-100 dark:border-dark-border text-gray-800 dark:text-gray-100 rounded-2xl font-black text-[15px] flex items-center justify-center gap-3 hover:border-amber-500 transition-all active:scale-[0.98]"
-                                >
-                                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
-                                    구글 1초 가입하기
-                                </button>
-
-                                <p className="mt-4 text-[11px] text-gray-400 font-bold">인증 완료 후 회원가입이 마무리됩니다.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="mt-8 text-center space-y-2">
-                    <p className="text-[11px] text-gray-300 dark:text-gray-700 font-bold tracking-tight">
-                        © {new Date().getFullYear()} ELFALBA. ALL RIGHTS RESERVED.
-                    </p>
-                </div>
-            </div>
-        )
     }
 
     // ── 회원가입 폼 ────────────────────────────────────────────
@@ -414,27 +198,20 @@ export default function SignupPage() {
                         </div>
                     </div>
 
-                    {/* 인증 자동 입력 리드온리 필드들 */}
                     <div className="pt-2 space-y-3">
-                        <div className="grid grid-cols-2 gap-3 opacity-80">
+                        <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">성함</label>
+                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">닉네임</label>
                                 <input value={form.nickname} onChange={(e) => setForm(prev => ({ ...prev, nickname: e.target.value }))}
-                                    placeholder="성함을 입력해주세요"
+                                    placeholder="별명 혹은 상호명" required
                                     className="w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border text-gray-900 dark:text-white text-[13px] font-bold outline-none focus:border-amber-300 transition" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">생년월일</label>
-                                <input value={form.birthday} onChange={(e) => setForm(prev => ({ ...prev, birthday: e.target.value }))}
-                                    placeholder="예: 021108"
+                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">휴대폰 번호</label>
+                                <input value={form.phone} onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
+                                    placeholder="예: 01012345678"
                                     className="w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border text-gray-900 dark:text-white text-[13px] font-bold outline-none focus:border-amber-300 transition" />
                             </div>
-                        </div>
-                        <div className="opacity-80">
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 pl-1">휴대폰 번호</label>
-                            <input value={form.phone} onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
-                                placeholder="예: 01012345678"
-                                className="w-full h-11 px-4 rounded-xl bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border text-gray-900 dark:text-white text-[13px] font-bold outline-none focus:border-amber-300 transition" />
                         </div>
                     </div>
 
@@ -493,4 +270,3 @@ export default function SignupPage() {
         </div>
     )
 }
-

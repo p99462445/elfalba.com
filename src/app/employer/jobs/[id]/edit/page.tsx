@@ -3,20 +3,16 @@ import React, { useState, useEffect, useRef, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Plus, X, ChevronDown, Bold, Type, Palette, AlignLeft, AlignCenter, AlignRight, List, Underline, Strikethrough, Link as LinkIcon, Image as ImageIcon } from 'lucide-react'
-import RegionPicker from '@/components/ui/RegionPicker'
 
 const CATEGORY_OPTIONS = [
-    { name: '룸', slug: 'room' },
-    { name: '노래주점', slug: 'karaoke' },
-    { name: '텐프로/쩜오', slug: 'tenpro' },
-    { name: '바/카페', slug: 'bar' },
-    { name: '아로마', slug: 'aroma' },
+    { name: '촬영보조', slug: 'camera-assistant' },
+    { name: '연기자', slug: 'actor' },
+    { name: '보조출연', slug: 'extra' },
     { name: '기타', slug: 'etc' },
 ]
 
 const SALARY_TYPES = [
-    { value: 'TC', label: '티씨 (T/C)' },
-    { value: 'HOURLY', label: '시급' },
+    { value: 'MONTHLY', label: '월급' },
     { value: 'NEGOTIABLE', label: '협의' },
 ]
 
@@ -31,8 +27,8 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
     const [form, setForm] = useState({
         title: '',
         regionSlugs: [] as string[],
-        categorySlug: 'room',
-        salaryType: 'TC',
+        categorySlug: 'camera-assistant',
+        salaryType: 'MONTHLY',
         salaryAmount: '',
         salaryInfo: '',
         ageMin: '20',
@@ -68,8 +64,8 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
                     setForm({
                         title: jobData.title || '',
                         regionSlugs: jobData.regions?.map((rj: any) => rj.region.slug) || [],
-                        categorySlug: jobData.category?.slug || 'room',
-                        salaryType: jobData.salary_type || 'TC',
+                        categorySlug: jobData.category?.slug || 'camera-assistant',
+                        salaryType: jobData.salary_type || 'MONTHLY',
                         salaryAmount: String(jobData.salary_amount || ''),
                         salaryInfo: jobData.salary_info || '',
                         ageMin: String(jobData.age_min || 20),
@@ -145,17 +141,12 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!form.title || !form.contactInfo || form.regionSlugs.length === 0) {
-            alert('제목, 지역, 연락처는 필수입니다.')
+        if (!form.title || !form.contactInfo) {
+            alert('제목과 연락처는 필수입니다.')
             return
         }
 
-        const forbiddenWords = ['실장', '팀장', '사장', '담당', '마담', '대표', '전무', '상무', '이사'];
-        const hasManagerForbiddenWord = forbiddenWords.some(word => form.managerName.includes(word));
-        if (hasManagerForbiddenWord) {
-            alert('담당자 이름에는 직급/호칭을 넣을 수 없습니다. (실명 입력 권장: 홍길동 O / 박실장 X)');
-            return;
-        }
+
 
         setIsLoading(true)
         try {
@@ -166,7 +157,7 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
                 finalLogoUrl = urls[0]
             }
 
-            const salaryLabel = SALARY_TYPES.find(t => t.value === form.salaryType)?.label.split(' ')[0] || '티씨'
+            const salaryLabel = SALARY_TYPES.find(t => t.value === form.salaryType)?.label.split(' ')[0] || '월급'
             const salaryInfoValue = form.salaryAmount ? `${salaryLabel} ${Number(form.salaryAmount).toLocaleString()}만원` : '협의'
 
             const res = await fetch(`/api/jobs/${id}`, {
@@ -174,6 +165,7 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...form,
+                    categorySlug: form.categorySlug, // 정합성 유지
                     description: finalDescription,
                     logoUrl: finalLogoUrl,
                     salaryInfo: salaryInfoValue,
@@ -202,7 +194,7 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
         return '지역 선택'
     }
     const getCatName = (slug: string) => CATEGORY_OPTIONS.find(c => c.slug === slug)?.name || '직종 선택'
-    const getSalaryName = (val: string) => SALARY_TYPES.find(t => t.value === val)?.label.split(' ')[0] || '티씨'
+    const getSalaryName = (val: string) => SALARY_TYPES.find(t => t.value === val)?.label.split(' ')[0] || '월급'
 
     return (
         <div className="min-h-screen bg-[#f8f9fa] dark:bg-dark-bg text-gray-800 dark:text-gray-100 font-sans pb-32">
@@ -214,13 +206,7 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
                 <div className="w-[38px]"></div>
             </header>
 
-            <div className="bg-[#fcfdff] dark:bg-dark-bg py-5 px-4 text-center border-b border-gray-100 dark:border-dark-border flex flex-col items-center justify-center">
-                <p className="text-[13px] text-gray-500 dark:text-gray-400 font-medium leading-[1.6]">
-                    엘프알바에서 성매매와 관련된 광고를 할 경우,<br />
-                    서비스 이용이 제한되며 법적 처벌을 받을 수 있어요.<br />
-                    <Link href="/support/policy" className="text-[#339af0] font-bold mt-1 inline-block">자세히 보기</Link>
-                </p>
-            </div>
+
 
             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-white dark:bg-dark-card min-h-screen border-x border-gray-50 dark:border-dark-border">
                 <div className="p-5 space-y-6">
@@ -251,8 +237,7 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
                                         {form.salaryType === 'NEGOTIABLE' ? '협의' : `${getSalaryName(form.salaryType)} ${form.salaryAmount || '0'}만원`}
                                     </span>
                                     <span>·</span>
-                                    <span>{getRegionName(form.regionSlugs[0])}</span>
-                                    <span>·</span>
+                                    <span>{getCatName(form.categorySlug)}</span>
                                     <span>{getCatName(form.categorySlug)}</span>
                                 </div>
                             </div>
@@ -275,7 +260,7 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
                                 <div className="mb-4">
                                     <label className="block text-[13px] font-bold text-gray-700 dark:text-gray-300 mb-1">공고상호명</label>
                                     <input name="businessName" value={form.businessName} onChange={handleChange}
-                                        placeholder="공고상호명 (악녀대표, 악녀1등실장 등)"
+                                        placeholder="상호명 (예: 엘프엔터, 엘프스튜디오 등)"
                                         className="ui-input w-full dark:bg-dark-bg dark:border-dark-border dark:text-gray-100" required />
                                 </div>
 
@@ -300,17 +285,7 @@ export default function EditJobPage({ params }: { params: Promise<{ id: string }
 
                             </div>
 
-                            <div>
-                                <div className="text-[14px] font-black text-gray-900 dark:text-gray-100 mb-3 border-b-2 border-gray-900 dark:border-gray-100 pb-2 flex items-center gap-2">
-                                    <span>지역 선택</span>
-                                    <span className="text-gray-400 dark:text-gray-600 font-normal text-[12px]">(최대 3개)</span>
-                                </div>
-                                <RegionPicker
-                                    regions={metadata.regions}
-                                    value={form.regionSlugs}
-                                    onChange={(slugs) => setForm(prev => ({ ...prev, regionSlugs: slugs }))}
-                                />
-                            </div>
+
 
                             <div>
                                 <div className="text-[14px] font-black text-gray-900 dark:text-gray-100 mb-3 border-b-2 border-gray-900 dark:border-gray-100 pb-2 mt-6">직종 선택</div>
