@@ -225,9 +225,14 @@ export default function LoginForm({ onSuccess, onClose, onSwitchToSignup }: Logi
                 <div className="text-amber-500 font-black text-2xl italic">엘프알바</div>
             </div>
 
-            <h2 className="text-[18px] font-black leading-tight mb-6 tracking-tighter text-gray-900 dark:text-gray-100 break-keep">
+            <h2 className="text-[18px] font-black leading-tight mb-2 tracking-tighter text-gray-900 dark:text-gray-100 break-keep">
                 로그인 하시면<br />모든 정보를 볼 수 있어요!
             </h2>
+            <div className="mb-6 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-900/30">
+                <p className="text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                    🔍 심사용 테스트 아이디: <span className="underline italic">1@1.com</span> / 비번: <span className="underline italic">123123</span>
+                </p>
+            </div>
 
             <form className="space-y-3" onSubmit={handleLogin}>
                 <div className="space-y-1">
