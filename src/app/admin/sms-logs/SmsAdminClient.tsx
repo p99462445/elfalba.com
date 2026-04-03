@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { format } from 'date-fns';
@@ -22,7 +22,7 @@ export default function SmsAdminClient({
     sms_expiry_2d_text: siteConfig.sms_expiry_2d_text || "♥엘프알바♥대표님의 광고가 2일 남으셨어요^.^연장 신청바랍니다 elfalba.com",
     sms_expiry_1d_text: siteConfig.sms_expiry_1d_text || "♥엘프알바♥대표님의 광고가 내일 마감되세요^.^연장 신청바랍니다 elfalba.com",
     sms_expired_1d_text: siteConfig.sms_expired_1d_text || "♥엘프알바♥대표님의 광고가 마감되었어요^.^연장 신청바랍니다 elfalba.com",
-    sms_payment_text: siteConfig.sms_payment_text || "[엘프알바] {금액}원 입금 부탁드립니다. {은행} {계좌} 예금주:{예금주} 문의:010-9946-2445"
+    sms_payment_text: siteConfig.sms_payment_text || "[엘프알바] {금액}원 입금 부탁드립니다. {은행} {계좌} 예금주:{예금주} 문의:1899-0930"
   });
   
   // 개별발송용 상태

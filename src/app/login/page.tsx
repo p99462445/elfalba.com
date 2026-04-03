@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -118,7 +118,7 @@ export default function LoginPage() {
             window.location.href = successModal.redirectUrl
         } catch (err) {
             console.error('Final login failed:', err)
-            showError('로그인 처리 중 문제가 발생했습니다. 대표번호(010-9946-2445)로 문의바랍니다.')
+            showError('로그인 처리 중 문제가 발생했습니다. 대표번호(1899-0930)로 문의바랍니다.')
         } finally {
             setIsLoading(false)
         }

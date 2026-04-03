@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect, useRef } from 'react'
 import { Megaphone, MessageCircleQuestion, X, Plus, Lock, Send, ShieldCheck, ChevronLeft, HeadphonesIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -203,7 +203,7 @@ export default function SupportClient({
                     <h3 className="text-lg font-black text-gray-500 dark:text-gray-400 mb-2">상담이 필요하신가요?</h3>
                     <p className="text-xs text-gray-400 dark:text-gray-500 font-bold mb-6">전화 또는 문자로 문의주시면 친절히 안내드립니다.</p>
                     <div className="flex flex-col gap-2">
-                        <a href="tel:010-9946-2445" className="text-3xl font-black text-amber-500 hover:text-amber-600 transition-colors">010-9946-2445</a>
+                        <a href="tel:1899-0930" className="text-3xl font-black text-amber-500 hover:text-amber-600 transition-colors">1899-0930</a>
                         <p className="text-[10px] text-gray-400 dark:text-gray-600 font-bold">평일 11:00 ~ 20:00 (주말/공휴일 휴무)</p>
                     </div>
                 </div>

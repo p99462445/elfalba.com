@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -265,7 +265,7 @@ export default function BusinessRegistrationPage() {
                             {/* Notice Texts */}
                             <div className="bg-gray-50 dark:bg-dark-bg rounded-2xl p-4 space-y-1 border border-gray-100 dark:border-dark-border">
                                 <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">※ 사업자등록번호 도용방지를 위해 기업인증을 시행하고 있습니다.</p>
-                                <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">※ 인증이 되지 않을 경우 010-9946-2445 (유선)으로 문의해 주세요.</p>
+                                <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">※ 인증이 되지 않을 경우 1899-0930 (유선)으로 문의해 주세요.</p>
                             </div>
 
                             {verificationStatus === 'SUCCESS' && (

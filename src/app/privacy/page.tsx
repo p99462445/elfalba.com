@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
@@ -168,7 +168,7 @@ export default function PrivacyPage() {
                                         <p className="text-gray-400 text-xs font-black uppercase tracking-widest">관리 책임 및 담당자</p>
                                         <div className="space-y-2">
                                             <p className="text-2xl font-black">박근홍</p>
-                                            <p className="text-gray-400 font-bold">010-9946-2445</p>
+                                            <p className="text-gray-400 font-bold">1899-0930</p>
                                             <p className="text-amber-400 font-bold">p99462445@gmail.com</p>
                                         </div>
                                     </div>

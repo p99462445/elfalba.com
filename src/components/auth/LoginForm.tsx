@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -99,7 +99,7 @@ export default function LoginForm({ onSuccess, onClose, onSwitchToSignup }: Logi
                     password: loginPwd
                 })
             } else {
-                showError(data.message || '이사 중 오류가 발생했습니다. 대표번호(010-9946-2445)로 문의바랍니다.')
+                showError(data.message || '이사 중 오류가 발생했습니다. 대표번호(1899-0930)로 문의바랍니다.')
             }
         } catch (err) {
             showError('이사 요청 중 알 수 없는 오류가 발생했습니다.')
@@ -127,7 +127,7 @@ export default function LoginForm({ onSuccess, onClose, onSwitchToSignup }: Logi
             }
         } catch (err) {
             console.error('Final login failed:', err)
-            showError('로그인 처리 중 문제가 발생했습니다. 대표번호(010-9946-2445)로 문의바랍니다.')
+            showError('로그인 처리 중 문제가 발생했습니다. 대표번호(1899-0930)로 문의바랍니다.')
         } finally {
             setIsLoading(false)
         }

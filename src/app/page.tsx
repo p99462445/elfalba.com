@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+﻿import React, { Suspense } from 'react'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { createClient } from '@/lib/supabase/server'
@@ -103,7 +103,7 @@ async function OfficialPartnerSection() {
 export default async function HomePage() {
   const config = {
     site_name: '엘프알바',
-    contact_phone: '010-9946-2445',
+    contact_phone: '1899-0930',
     bank_name: '국민은행',
     bank_account: '219401-04-263185',
     bank_owner: '(주)세컨즈나인',

@@ -1,4 +1,4 @@
-import prisma from './prisma';
+﻿import prisma from './prisma';
 
 async function main() {
   console.log('Seeding default SMS settings...');
@@ -18,7 +18,7 @@ async function main() {
     create: {
       id: 'default',
       site_name: "엘프알바",
-      contact_phone: "010-9946-2445",
+      contact_phone: "1899-0930",
       bank_name: "국민은행",
       bank_account: "219401-04-263185",
       bank_owner: "(주)세컨즈나인",

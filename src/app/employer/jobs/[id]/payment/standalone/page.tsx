@@ -57,7 +57,7 @@ export default function StandalonePaymentPage({ params: paramsPromise }: { param
                     price: String(product.price),
                     goodname: product.name,
                     buyername: jobData.employer?.user?.nickname || jobData.employer?.user?.name || jobData.business_name || '사용자',
-                    buyertel: jobData.contact_value || jobData.employer?.phone || '010-9946-2445',
+                    buyertel: jobData.contact_value || jobData.employer?.phone || '1899-0930',
                     buyeremail: jobData.employer?.user?.email || 'customer@elfalba.com',
                     merchantData: `${id}:${productId}:${userId}:true` 
                 })

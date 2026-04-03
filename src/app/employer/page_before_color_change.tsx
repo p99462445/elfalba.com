@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Rocket, Edit3, Plus, ArrowLeft, Crown, Sparkles, LogOut, User, MessageSquare, X, CreditCard, Settings, RefreshCw, Briefcase, Building2, ChevronRight, ReceiptText, Clock, Copy, Check, Zap } from 'lucide-react'
@@ -509,7 +509,7 @@ export default function EmployerDashboard() {
                             <div className="space-y-4">
                                 <div className="bg-amber-50/50 dark:bg-pink-950/10 rounded-xl py-3 px-4 border border-amber-100 dark:border-pink-900/20">
                                     <p className="text-[11px] font-black text-amber-600 dark:text-amber-400 text-center">
-                                        고객센터: 010-9946-2445
+                                        고객센터: 1899-0930
                                     </p>
                                 </div>
                                 <button

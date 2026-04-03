@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -31,8 +31,8 @@ export default function Header() {
             try {
                 const res = await fetch('/api/common/site-config')
                 const data = await res.json()
-                if (data.contact_phone === '010-9946-2445') {
-                    data.contact_phone = '010-9946-2445'
+                if (data.contact_phone === '1899-0930') {
+                    data.contact_phone = '1899-0930'
                 }
                 setSiteConfig(data)
             } catch (e) {

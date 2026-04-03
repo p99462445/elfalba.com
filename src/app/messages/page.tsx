@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import React, { useState, useEffect, useRef, use } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, MessageSquare, Send, User, Loader2, MoreVertical, Trash2, Headphones } from 'lucide-react'
@@ -247,7 +247,7 @@ export default function MessagesPage({ params: paramsPromise }: { params?: Promi
                                                             엘프알바 고객센터 운영시간 11~20시 연중무휴
                                                         </p>
                                                         <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400">
-                                                            대표번호 010-9946-2445
+                                                            대표번호 1899-0930
                                                         </p>
                                                     </div>
                                                 </div>

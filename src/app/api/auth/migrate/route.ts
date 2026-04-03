@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+﻿export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Client } from 'pg';
@@ -160,7 +160,7 @@ export async function POST(req: Request) {
         console.error('Migration API Error:', error);
         return NextResponse.json({ 
             success: false, 
-            message: `이사 처리 중 오류가 발생했습니다. 대표번호(010-9946-2445)로 문의주시면 도와드리겠습니다.` 
+            message: `이사 처리 중 오류가 발생했습니다. 대표번호(1899-0930)로 문의주시면 도와드리겠습니다.` 
         }, { status: 500 });
     } finally {
         await client.end();
