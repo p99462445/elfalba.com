@@ -61,7 +61,7 @@ export default function AdvertisePage() {
                 currency: "KRW",
                 payMethod: "CARD",
                 customer: {
-                    customerId: currentUser.id,
+                    customerId: currentUser.id?.slice(0, 20) || 'guest',
                     fullName: currentUser.name,
                     phoneNumber: currentUser.phone,
                     email: currentUser.email,
