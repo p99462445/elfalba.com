@@ -42,10 +42,10 @@ export default function Footer({ config }: { config?: any }) {
                     <div className="text-[10px] text-gray-400 leading-relaxed uppercase text-center space-y-1">
                         <p>{address}</p>
                         <p>
-                            팩스 : {fax} | 사업자 등록번호 : {businessNum} | 통신판매업신고 : {reportNum} | 대표자 : {ceoName}
+                            대표번호 : {config?.contact_phone || '1899-0930'} | 상호명 : {companyName} | 사업자 등록번호 : {businessNum} | 통신판매업신고 : {reportNum} | 대표자 : {ceoName}
                         </p>
                         <p>
-                            직업정보제공사업신고확인증 : J1515020170005 | COPYRIGHT(c) 2011 엘프알바. ALL RIGHTS RESERVED.
+                            직업정보제공사업신고확인증 : {jobInfoNum} | COPYRIGHT(c) 2011 엘프알바. ALL RIGHTS RESERVED.
                         </p>
                     </div>
                 </div>
